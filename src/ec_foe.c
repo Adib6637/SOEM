@@ -12,6 +12,7 @@
  */
 
 #include "soem/soem.h"
+#include <stdio.h>
 #include <string.h>
 #include "osal.h"
 #include "oshw.h"
@@ -222,6 +223,9 @@ int ecx_FOEwrite(ecx_contextt *context, uint16 slave, char *filename, uint32 pas
    uint8 cnt;
    boolean worktodo, dofinalzero;
    int tsize;
+   int total_size;
+   int chunk_index = 0;
+   int expected_chunks;
 
    MbxIn = NULL;
    MbxOut = NULL;
@@ -241,6 +245,13 @@ int ecx_FOEwrite(ecx_contextt *context, uint16 slave, char *filename, uint32 pas
    {
       fnsize = maxdata;
    }
+   total_size = psize;
+   expected_chunks = (total_size > 0) ? ((total_size + maxdata - 1) / maxdata) : 1;
+   if ((total_size > 0) && ((total_size % maxdata) == 0))
+   {
+      expected_chunks++;
+   }
+   printf("[FoE] write: total_size=%d bytes, maxdata=%u, expected_chunks=%d\n", total_size, maxdata, expected_chunks);
    FOEp->MbxHeader.length = htoes(0x0006 + fnsize);
    FOEp->MbxHeader.address = htoes(0x0000);
    FOEp->MbxHeader.priority = 0x00;
@@ -313,6 +324,9 @@ int ecx_FOEwrite(ecx_contextt *context, uint16 slave, char *filename, uint32 pas
                         FOEp->PacketNumber = htoel(sendpacket);
                         memcpy(&FOEp->Data[0], p, segmentdata);
                         p = (uint8 *)p + segmentdata;
+                        chunk_index++;
+                        // spdlog::info("[FoE] write: chunk={}/{} size={} bytes", chunk_index, expected_chunks, segmentdata);
+                        printf("[FoE] write: chunk=%d/%d size=%d bytes\n", chunk_index, expected_chunks, segmentdata);
                         /* send FoE data to slave */
                         wkc = ecx_mbxsend(context, slave, MbxOut, EC_TIMEOUTTXM);
                         MbxOut = NULL;
@@ -370,6 +384,8 @@ int ecx_FOEwrite(ecx_contextt *context, uint16 slave, char *filename, uint32 pas
                         FOEp->PacketNumber = htoel(sendpacket);
                         memcpy(&FOEp->Data[0], p, segmentdata);
                         p = (uint8 *)p + segmentdata;
+                        chunk_index++;
+                        printf("[FoE] write: chunk=%d/%d size=%d bytes\n", chunk_index, expected_chunks, segmentdata);
                         /* send FoE data to slave */
                         wkc = ecx_mbxsend(context, slave, MbxOut, EC_TIMEOUTTXM);
                         MbxOut = NULL;
