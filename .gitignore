@@ -5,3 +5,5 @@ install
 /doc/html
 tags
 .vscode
+src/ec_foe.c
+.gitignore
