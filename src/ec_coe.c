@@ -877,6 +877,7 @@ int ecx_readPDOmap(ecx_contextt *context, uint16 Slave, uint32 *Osize, uint32 *I
       /* iterate for every SM type defined */
       for (iSM = 2; iSM < nSM; iSM++)
       {
+         // EC_PRINT("  Reading SM type for SM index %d/%d\n", iSM+1 , nSM);
          rdl = sizeof(tSM);
          tSM = 0;
          /* read SyncManager Communication Type */
@@ -903,11 +904,13 @@ int ecx_readPDOmap(ecx_contextt *context, uint16 Slave, uint32 *Osize, uint32 *I
             // end slave bug prevention code
 
             context->slavelist[Slave].SMtype[iSM] = tSM;
+            // printf("  SM%d type %d\n", iSM, tSM);
             /* check if SM is unused -> clear enable flag */
             if (tSM == 0)
             {
                context->slavelist[Slave].SM[iSM].SMflags =
                    htoel(etohl(context->slavelist[Slave].SM[iSM].SMflags) & EC_SMENABLEMASK);
+               // printf("  SM%d unused, clearing enable flag\n", iSM);
             }
             if ((tSM == 3) || (tSM == 4))
             {
@@ -917,6 +920,7 @@ int ecx_readPDOmap(ecx_contextt *context, uint16 Slave, uint32 *Osize, uint32 *I
                if (Tsize)
                {
                   context->slavelist[Slave].SM[iSM].SMlength = htoes((uint16)((Tsize + 7) / 8));
+                  // printf("  SM%d mapped PDO size %u\n", iSM, Tsize);
                   if (tSM == 3)
                   {
                      /* we are doing outputs */

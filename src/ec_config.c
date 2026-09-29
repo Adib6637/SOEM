@@ -549,6 +549,18 @@ static int ecx_map_coe_soe(ecx_contextt *context, uint16 slave, int thread_n)
    context->slavelist[slave].Obits = (uint16)Osize;
    context->slavelist[slave].Ibits = (uint16)Isize;
 
+   // rval = 0;
+   // (void)rval;
+   // (void)thread_n;
+   // Isize = 538*8;
+   // Osize = 94*8;
+   // context->slavelist[slave].Obits = (uint16)Osize;
+   // context->slavelist[slave].Ibits = (uint16)Isize;
+   // context->slavelist[slave].SMtype[2] = 3;
+   // context->slavelist[slave].SMtype[3] = 4;
+   // context->slavelist[slave].SM[2].SMlength = htoes((uint16)((Osize + 7) / 8));
+   // context->slavelist[slave].SM[3].SMlength = htoes((uint16)((Isize + 7) / 8));
+
    return 1;
 }
 
