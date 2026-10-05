@@ -520,6 +520,11 @@ static int ecx_map_coe_soe(ecx_contextt *context, uint16 slave, int thread_n)
    {
       context->slavelist[slave].PO2SOconfig(context, slave);
    }
+   if (context->slavelist[slave].skipPDOmap &&
+       (context->slavelist[slave].Obits || context->slavelist[slave].Ibits))
+   {
+      return 1;
+   }
    /* Find IO mapping in slave */
    Isize = 0;
    Osize = 0;

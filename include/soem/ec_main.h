@@ -247,6 +247,8 @@ typedef struct ec_slave
    boolean islost;
    /** registered configuration function PO->SO */
    int (*PO2SOconfig)(ecx_contextt *context, uint16 slave);
+   /** Application supplied PDO sizes and SM types/lengths; skip CoE/SoE discovery. */
+   boolean skipPDOmap;
    /** mailbox handler state, 0 = no handler, 1 = cyclic task mbx handler, 2 = slave lost */
    int mbxhandlerstate;
    /** mailbox handler robust mailbox protocol state */
